@@ -1,47 +1,21 @@
 import { createStore } from 'redux';
-const createId = (c => () => ++c)(0);
 const defaultState = {
-  counters: [
-    { id: createId(), a: 1 },
-    { id: createId(), a: 1 },
-  ],
+  data: {
+    people: [
+      { id: 1, name: 'one', friends: [2, 3] },
+      { id: 2, name: 'two', friends: [1, 3] },
+      { id: 3, name: 'three', friends: [1, 2, 3] },
+    ],
+  },
 };
 
 const store = createStore(
-  (state = defaultState, action) => {
-    console.log('in the reducer', state, action);
-    if (action.type === 'UP' || action.type === 'DOWN') {
-      const direction = action.type === 'UP' ? 1 : -1;
-      return {
-        ...state,
-        counters: state.counters.map(item =>
-          item.id === action.id
-            ? { ...item, a: item.a + direction }
-            : item
-        ),
-      };
-    }
-    if (action.type === 'REMOVE') {
-      return {
-        ...state,
-        counters: state.counters.filter(
-          item => item.id !== action.id
-        ),
-      };
-    }
-    if (action.type === 'SOME') {
-      return { ...state, counters: [...state.counters] };
-    }
-    if (action.type === 'ADD') {
-      return {
-        ...state,
-        counters: state.counters.concat({
-          id: createId(),
-          a: 0,
-        }),
-      };
-    }
-    return state;
+  (state = defaultState) => {
+    //reducer always returns a new state object but
+    //  never chanes values this means components will
+    //  never re render but selectors will be called
+    //  every time an action dispatches
+    return { ...state };
   },
   defaultState,
   window.__REDUX_DEVTOOLS_EXTENSION__ &&
