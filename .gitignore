@@ -1,0 +1,4 @@
+node_modules/
+*~
+#*
+.vs_code/
