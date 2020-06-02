@@ -1,18 +1,18 @@
 import { createSelector } from 'reselect';
 const selectData = (state) => state.data;
 export const selectPeople = createSelector(
-  selectData,
+  [selectData],
   (data) => data.people
 );
 const createSelectPerson = (personId) =>
-  createSelector(selectPeople, (people) =>
+  createSelector([selectPeople], (people) =>
     people.find(({ id }) => id === personId)
   );
 export const createSelectPersonWithTotalFriends = (
   personId
 ) =>
   createSelector(
-    createSelectPerson(personId),
+    [createSelectPerson(personId)],
     (person) => ({
       ...person,
       totalFriends: person.friends.length,
@@ -20,8 +20,10 @@ export const createSelectPersonWithTotalFriends = (
   );
 export const createSelectPersonWithFriends = (personId) =>
   createSelector(
-    selectPeople,
-    createSelectPersonWithTotalFriends(personId),
+    [
+      selectPeople,
+      createSelectPersonWithTotalFriends(personId),
+    ],
     (people, person) => ({
       ...person,
       friends: person.friends.map((personId) =>
