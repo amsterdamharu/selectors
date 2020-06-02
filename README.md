@@ -1,7 +1,7 @@
-# react-redux hooks example
+# reselect selectors example
 
-Example app that uses [react-redux hooks](https://react-redux.js.org/next/api/hooks) instead of connect.
+Example app that uses [reselect](https://github.com/reduxjs/reselect) to select data from store.
 
 Created with create-react-app so `yarn install` and `yarn start` (or npm).
 
-All hooks code in [scr/components/App/index.js](https://github.com/amsterdamharu/react-redux-hooks/blob/master/src/components/App/index.js). Code should normally be split up in containers, selectors...
+Selectors can be found in [selectors.js](https://github.com/amsterdamharu/selectors/blob/master/src/selectors.js)
