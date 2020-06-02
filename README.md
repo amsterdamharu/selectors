@@ -150,14 +150,14 @@ const selectPersonFormatted = createSelector(
 );
 const one = selectPersonFormatted(state);
 const two = selectPersonFormatted(state);
-//this is true because selectPersonFormatted is memoized because selectFirstName
-//  and selectLastName return the same value both times they are called
+//this is true, selectPersonFormatted is memoized because selectFirstName
+//  and selectLastName return the same reference both times they are called
 console.log(one === two);
 ```
 
 ## Parameterized and memoized
 
-The example showing memoized selector only takes state as an argument. In this part I'll show how to create a memoized selector that takes a parameter. We want to select a person by id and have a list of ids that List component renders as Items:
+The example showing memoized selector only takes state as an argument. In this part I'll show how to create a memoized selector that takes a parameter. We want to select a person by id. There is a list of ids that List component renders as Items:
 
 ```js
 const List = ({ items }) => (
@@ -188,7 +188,7 @@ const Item = ({ id }) => {
 };
 ```
 
-Every time Item renders the `selectItemById` is created again and nothing is memoized because each render re creates the selector. To solve this we can use `React.useMemo`
+Every time Item renders the `selectItemById` is created again and nothing is memoized because each render re creates the selector. To solve this we can use `React.useMemo`. Here is the correct way to use `createSelectItemById`.
 
 ```js
 const Item = ({ id }) => {
@@ -201,11 +201,11 @@ const Item = ({ id }) => {
 };
 ```
 
-Now when List renders multiple Item component each Item component will have it's own `selectItemById` selector.
+Now when List renders multiple Item component each Item component will have it's own `selectItemById` selector that is not re created unless the id prop changes.
 
 ## Performance
 
-Having your results memoize means that when an action is dispatched that changes something in state that is not relevant to your component then your component won't re render. This can improve performance and prevent unneeded re renders but does cost a little as well. As you can see with the previous example; each item creates a `selectItemById` function and that function is a selector created with reselect so it's 2 nested curried functions.
+Having your results memoized means that when an action is dispatched that changes something in state that is not relevant to your component then your component won't re render. This can improve performance and prevent unneeded re renders but does cost a little as well. As you can see with the previous example; each item creates a `selectItemById` function and that function is a selector created with reselect so it's 2 nested curried functions that take time to be created and take up memory.
 
 If your component often re renders when it should not then memoization will help. But if your component re renders because it needs to (state that it is using has changed so it will render something different) then creating all these curried functions does not do much since they are just re created every time.
 
