@@ -10,7 +10,9 @@ Selectors can be found in [selectors.js](https://github.com/amsterdamharu/select
 
 A selector is a function that gets data from state and maybe calculate new values from that value. It can be used in react-redux connect or react-redux useSelector.
 
-For example; if you want to get people from state and it is in state.data.people you can write a function like so: `state => state.data.people`. The problem with this is that when you do this many times in your code and later change the shape of your state (for example change data to apiResult) then you have to change a lot of code.
+For example; if you want to get people from state and it is in state.data.people you can write a function like so: `state => state.data.people`. The problem with this is that you may at some point need to change the location of people or change the shape that people is stored in the state.
+
+You can change the location when you descide that people should be in `state.data.apiResult.data` and you can change the shape when you previously stored people as an array: `[{id:1,name:'person one'}]` but now have a normalized object: `{1:{id:1,name:'person one'}}`.
 
 ## Composing selectors
 
@@ -28,7 +30,7 @@ const selectPeople = createSelector(
 
 The first argument is an array of one of more functions, in the selectPeople example it is one function that selects data. The second argument is a function that gets the returned values of the array of functions from the first argument so in this case it gets `state.data`. The last function then selects people from data and returns that.
 
-The implementation of where `state.data` is located is only defined once, if you change it later to `state.apiResult` you only need to modify one function.
+The implementation of where `state.data` is located is only defined once, if you change it later to `state.data.apiResult` you only need to modify one function.
 
 Here is another example with multiple selectors where it gets the firstName and lastName of the first person in people:
 
