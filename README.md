@@ -12,7 +12,7 @@ A selector is a function that gets data from state and maybe calculate new value
 
 For example; if you want to get people from state and it is in state.data.people you can write a function like so: `state => state.data.people`. The problem with this is that you may at some point need to change the location of people or change the shape that people is stored in the state.
 
-You can change the location when you descide that people should be in `state.data.apiResult.data` so you have to change all the functions. If you used reselect you only change one function: `const selectPeople = state => state.data.apiResult.data`.
+You can change the location when you descide that people should be in `state.data.apiResult.data` so you have to change all the functions. If you used reselect you only change one function: `const selectPeople = state => state.data.apiResult.data`. Or you can do even better and compose selectors.
 
 ## Composing selectors
 
