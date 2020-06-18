@@ -122,14 +122,14 @@ const peopleNamedJerry = createSelectUserByFirstName(
 
 ## Memoization
 
-Functions created with `createSelector` are memoized, this means that when the functions in the array passed as the first argument return the same value when you call it again the function as the second argument is not called and the same value is returned instead.
+Functions created with `createSelector` are memoized, this means that when the functions in the array passed as the first argument return the same value as when you called it last time the function as the second argument is not called and the value that was returned last time is returned instead.
 
 Here is an example that is not memoized:
 
 ```js
 const state = { firstName: 'Ben', lastName: 'Stiller' };
 const selectPersonFormatted = (state) => ({
-  fullName: `${state.firstName} ${state.lastName}`,
+  fullName: `${state.firstName} ${state.lastName}`, //returns new object every time
 });
 const one = selectPersonFormatted(state);
 const two = selectPersonFormatted(state);
@@ -146,6 +146,9 @@ const selectFirstName = (state) => state.firstName;
 const selectLastName = (state) => state.lastName;
 const selectPersonFormatted = createSelector(
   [selectFirstName, selectLastName],
+  //if firstName and lastName didn't change from what
+  //  it was in the last call then the next function isn't
+  //  called and previous value is returned instead
   (firstName, lastName) => ({
     fullName: `${firstName} ${lastName}`,
   })
