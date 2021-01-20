@@ -38,7 +38,7 @@
     "react-scripts": "4.0.1",
     "redux": "^4.0.1",
     "reselect": "^4.0.0",
-    "wouter": "^2.6.0"
+    "wouter": "^2.7.1"
   },
   "devDependencies": {
     "node-sass": "^5.0.0"
