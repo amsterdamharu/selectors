@@ -73,13 +73,13 @@ const name = selectFirstlastName({
 }); //name is {firstName:"Ruby",lastName:"Rose"}
 ```
 
-The first argument to createSelector creating `selectFirstlastName` is an array with `selectFirstName` and `selectLastName`. The second argument to createSelector is a function that takes 2 arguments the first is `firstName` that came from `selectFirstName` and the second argument is `lastName` that comes from `lastName`.
+The first argument to createSelector creating `selectFirstlastName` is an array with `selectFirstName` and `selectLastName`. The second argument to createSelector is a function that takes 2 arguments the first is `firstName` that came from `selectFirstName` and the second argument is `lastName` that comes from `selectLastName`.
 
 The problem with the code is that it only gets first person from the array, what if I want to get a person who's first name is Ben?
 
 ## Curry
 
-In order to make a selector that finds person(s) whose first name is "Ben" or another name I need a selectPersonByName that takes the state and a name as an argument. You can pass multiple arguments to a selector but I will use a curried function instead.
+In order to make a selector that finds people whose first name is "Ben" or another name I need a selectPeopleByName that takes the state and a name as an argument. You can pass multiple arguments to a selector but I will use a curried function instead.
 
 A curried function is a function that takes one or more arguments and returns a new function. Here is an example of a curried function named `createMultiplier` that takes multiplier and returns a function that takes a number and when you call that function with a number it will multiply that number with multiplier.
 
@@ -98,11 +98,11 @@ The multiplier argument is available in closure scope. You can say that the func
 
 ## Parameterized selector
 
-Lets create a curried selector named `createSelectUserByFirstName` that will get a first name and return a selector function that gets the state and returns an array of people where the first name is what you passed to `createSelectUserByFirstName` (a curried function that closes over firstName)
+Lets create a curried selector named `createSelectPeopleByFirstName` that will get a first name and return a selector function that receives the state and returns an array of people where the first name is what you passed to `createSelectPeopleByFirstName` (a curried function that closes over firstName)
 
 ```js
 const selectPeople = (state) => state.people;
-const createSelectUserByFirstName = (firstName) =>
+const createSelectPeopleByFirstName = (firstName) =>
   createSelector([selectPeople], (people) =>
     people.filter(
       (person) => person.firstName === firstName
@@ -112,10 +112,10 @@ const createSelectUserByFirstName = (firstName) =>
 const state = {
   people: [{ firstName: 'Ben' }, { firstName: 'Jerry' }],
 };
-const peopleNamedBen = createSelectUserByFirstName('Ben')(
+const peopleNamedBen = createSelectPeopleByFirstName('Ben')(
   state
 );
-const peopleNamedJerry = createSelectUserByFirstName(
+const peopleNamedJerry = createSelectPeopleByFirstName(
   'Jerry'
 )(state);
 ```
@@ -156,13 +156,13 @@ const selectPersonFormatted = createSelector(
 const one = selectPersonFormatted(state);
 const two = selectPersonFormatted(state);
 //this is true, selectPersonFormatted is memoized because selectFirstName
-//  and selectLastName return the same reference both times they are called
+//  and selectLastName return the same value both times they are called
 console.log(one === two);
 ```
 
 ## Parameterized and memoized
 
-The example showing memoized selector only takes state as an argument. In this part I'll show how to create a memoized selector that takes a parameter. We want to select a person by id. There is a list of ids that List component renders as Items:
+The example showing memoized selector only takes state as an argument. In this part I'll show how to create a memoized selector that takes a parameter to be used in components. We want to select a person by id. There is a list of ids that List component renders as Items:
 
 ```js
 const List = ({ items }) => (
@@ -210,8 +210,8 @@ Now when List renders multiple Item component each Item component will have it's
 
 ## Performance
 
-Having your results memoized means that when an action is dispatched that changes something in state that is not relevant to your component then your component won't re render. This can improve performance and prevent unneeded re renders but does cost a little as well. As you can see with the previous example; each item creates a `selectItemById` function and that function is a selector created with reselect so it's 2 nested curried functions that take time to be created and take up memory.
+Having your results memoized means that when an action is dispatched that changes something in state that is not relevant to your component then your component won't re render. This can improve performance and prevent unneeded re renders but does cost a little as well. As you can see with the previous example; each item creates a `selectItemById` function and that function is a selector created with reselect so it's 2 memoized curried functions that take time to be created and take up memory.
 
-If your component often re renders when it should not then memoization will help. But if your component re renders because it needs to (state that it is using has changed so it will render something different) then creating all these curried functions does not do much since they are just re created every time.
+If your component often re renders when it should not then memoization will help. But if your component re renders because it needs to (state that it is using has changed so it will render something different) then creating all these memoized curried functions does not do much since they are just re created every time.
 
 In this sample application all the selectors used are [here](https://github.com/amsterdamharu/selectors/blob/master/src/selectors.js). There is an action dispatched when clicking on the "dispatch unrelated" link that will [re create state without changing any values](https://github.com/amsterdamharu/selectors/blob/master/src/store.js#L13-L19) and you can see that when clicking on the link it does not cause unneeded renders.

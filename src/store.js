@@ -12,7 +12,7 @@ const defaultState = {
 const store = createStore(
   (state = defaultState) => {
     //reducer always returns a new state object but
-    //  never chanes values this means components will
+    //  never change values this means components will
     //  never re render but selectors will be called
     //  every time an action dispatches
     return { ...state };
