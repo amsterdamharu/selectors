@@ -31,16 +31,16 @@
   "author": "Harm Meijer",
   "license": "ISC",
   "dependencies": {
-    "immer": "^8.0.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-redux": "^7.2.2",
-    "react-scripts": "4.0.1",
-    "redux": "^4.0.1",
+    "immer": "^9.0.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
+    "react-scripts": "4.0.3",
+    "redux": "^4.1.1",
     "reselect": "^4.0.0",
-    "wouter": "^2.7.1"
+    "wouter": "^2.7.4"
   },
   "devDependencies": {
-    "node-sass": "^5.0.0"
+    "node-sass": "^6.0.1"
   }
 }
