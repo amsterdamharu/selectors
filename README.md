@@ -112,12 +112,10 @@ const createSelectPeopleByFirstName = (firstName) =>
 const state = {
   people: [{ firstName: 'Ben' }, { firstName: 'Jerry' }],
 };
-const peopleNamedBen = createSelectPeopleByFirstName('Ben')(
-  state
-);
-const peopleNamedJerry = createSelectPeopleByFirstName(
-  'Jerry'
-)(state);
+const peopleNamedBen =
+  createSelectPeopleByFirstName('Ben')(state);
+const peopleNamedJerry =
+  createSelectPeopleByFirstName('Jerry')(state);
 ```
 
 ## Memoization
@@ -179,9 +177,24 @@ The Item component gets a prop named id and will use that to select the item fro
 ```js
 const selectItems = (state) => state.items;
 const createSelectItemById = (itemId) =>
-  createSelector([selectItems], (items) =>
-    items.find(({ id }) => id === itemId)
-  );
+  createSelector([selectItems], (items) => {
+    const item = items.find(({ id }) => id === itemId);
+    //if you just return the item here then memoization
+    //  doesn't matter, it will always return the same
+    //  item, you could still use useMemo in your
+    //  component to skip the find code but if you
+    //  return a new reference like below then I would
+    //  certainly use useMemo in the component so Item
+    //  components in the list won't needlessly re render
+    //  Actual DOM re render may not happen depending
+    //  on the jsx returned and the code properly using
+    //  useCallback for handlers you may pass as jsx
+    //  properties
+    return {
+      ...item,
+      fullName: `${item.first} ${item.last}`,
+    };
+  });
 ```
 
 Here is a how to use it wrong in the Item component:
