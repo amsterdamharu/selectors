@@ -21,8 +21,7 @@ const store = createStore(
 );
 const middleWares = [
   (store) => (next) => (action) =>
-    console.log('first', action) ||
-    next({ type: 'changed' }),
+    console.log('first', action) || next(action),
   (store) => (next) => (action) =>
     console.log('second', action) || next(action),
 ];
@@ -30,12 +29,14 @@ const reducer = (state = defaultState, action) => {
   console.log('in reducer:', state, action);
   return state;
 };
-const myCreateStore = (reducer, initialState) => {
+const myCreateStore = (reducer, initialState, next) => {
+  if (typeof next === 'function') {
+    return next(myCreateStore)(reducer, initialState);
+  }
   let state = initialState;
   const subscriptions = new Map();
-  const getState = () => initialState;
+  const getState = () => state;
   const dispatch = (action) => {
-    console.log('got action:', action);
     state = reducer(state, action);
     subscriptions.forEach((fn) => fn());
   };
@@ -70,11 +71,22 @@ function applyMiddleware(...wares) {
     };
   };
 }
-const wut = applyMiddleware(...middleWares)(myCreateStore)(
-  reducer
+// const wut = applyMiddleware(...middleWares)(myCreateStore)(
+//   reducer
+// );
+// const wut = myCreateStore(
+//   reducer,
+//   defaultState,
+//   applyMiddleware(...middleWares)
+// );
+const composeEnhancers =
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+const wut = myCreateStore(
+  reducer,
+  defaultState,
+  composeEnhancers(applyMiddleware(...middleWares))
 );
-console.log('before dispatch');
+
 window.wut = wut;
 wut.dispatch({ type: 'ok' });
-console.log('done dispatch');
 export default store;
