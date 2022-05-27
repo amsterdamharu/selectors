@@ -221,6 +221,14 @@ const Item = ({ id }) => {
 
 Now when List renders multiple Item component each Item component will have it's own `selectItemById` selector that is not re created unless the id prop changes.
 
+Since the component only re renders when id changes or when the return value of `selectItemById` changes you can also do this by making the component a pure component:
+
+```js
+const Item = React.memo(({ id }) => {
+  const item = useSelector(createSelectItemById(id));
+});
+```
+
 ## Performance
 
 Having your results memoized means that when an action is dispatched that changes something in state that is not relevant to your component then your component won't re render. This can improve performance and prevent unneeded re renders but does cost a little as well. As you can see with the previous example; each item creates a `selectItemById` function and that function is a selector created with reselect so it's 2 memoized curried functions that take time to be created and take up memory.
