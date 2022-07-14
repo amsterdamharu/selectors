@@ -9,28 +9,32 @@ const createAuth = (au) => {
 };
 
 const getToken = (au) => () => {
-  const scope = au.scope;
+  console.log('XXXXX in getToken');
   const auth = createAuth(au);
-
-  const instance = axios.create({
-    timeout: 1000,
-    headers: {
-      authorization: `Basic ${auth}`,
-      'content-type': 'application/x-www-form-urlencoded',
-    },
-  });
-  const formData = new URLSearchParams({
-    grant_type: 'client_credentials',
-    scope,
-  });
-  return instance
+  return axios
     .post(
       `${au.authUrl}/oauth/${au.projectKey}/anonymous/token`,
-      //is axios bugging out on me, works differently in fetch
-      // `grant_type=client_credentials&scope=${scope}`,
-      // `grant_type=client_credentials&scope=manage_project%3Afrontastic-1`,
-      formData
+      //@todo: how to make this work without offing yourself
+      //  got this to work in React app in 5 minutes, getting it
+      //  to work in farttastic will take weeks
+      `grant_type=client_credentials&scope=${encodeURI(
+        au.scope
+      )}`,
+      {
+        timeout: 1000,
+        headers: {
+          authorization: `Basic ${auth}`,
+          'content-type':
+            'application/x-www-form-urlencoded',
+        },
+      }
     )
+    .then((response) => {
+      //do not log in frontastic, it will crash on
+      //  circular data not parsing to json
+      console.log('XXXXXX got response', response);
+      return response.data;
+    })
     .catch((e) => console.log('XXXXXX error 88:', e));
 };
 
@@ -50,7 +54,7 @@ export const check = async () => {
     authUrl: settings.authUrl,
   };
   return getToken(au)().then((token) => {
-    console.log('XXXXX setting token:', token);
+    console.log('XXXXX got token:', token);
     return token;
   });
 };
