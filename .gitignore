@@ -4,4 +4,3 @@ node_modules/
 .vs_code/
 .DS_Store
 .eslintcache
-src/components/App/tokenAction.js

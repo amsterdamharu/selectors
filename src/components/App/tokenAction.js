@@ -31,11 +31,6 @@ const getToken = (au) => () => {
       // `grant_type=client_credentials&scope=manage_project%3Afrontastic-1`,
       formData
     )
-    .then((response) =>
-      response.ok
-        ? response.json()
-        : Promise.reject(response)
-    )
     .catch((e) => console.log('XXXXXX error 88:', e));
 };
 
